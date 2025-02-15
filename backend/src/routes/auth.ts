@@ -3,6 +3,7 @@ import { db } from "../db";
 import { NewUser, users } from "../db/schema";
 import { eq } from "drizzle-orm";
 import bcryptjs from "bcryptjs"
+import jwt from "jsonwebtoken"
 
 const authRouter = Router()
 
@@ -62,10 +63,45 @@ authRouter.post("/login", async (req: Request<{}, {}, LoginBody>, res: Response)
             return
         }
 
-        res.json(existingUser)
+        const token = jwt.sign({id: existingUser.id}, "passwordKey")
+
+        res.json({token, ...existingUser})
         
     } catch (error) {
         res.status(500).json({ error: error })
+    }
+})
+
+authRouter.post("/tokenIsValid", async(req, res) => {
+    try {
+
+        const token = req.header("x-auth-token")
+
+        if(!token) {
+            res.json(false)
+            return
+        }
+
+        const verified = jwt.verify(token, "passwordKey")
+
+        if(!verified) {
+            res.json(false)
+            return
+        } 
+
+        const verifiedToken = verified as {id: string}
+
+        const user = await db.select().from(users).where(eq(users.id, verifiedToken.id))
+
+        if(!user) {
+            res.json(false)
+            return
+        }
+
+            res.json(true)
+        
+    } catch (error) {
+        res.status(500).json(false)   
     }
 })
 
