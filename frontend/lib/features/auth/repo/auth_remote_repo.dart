@@ -1,11 +1,11 @@
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/constants.dart';
+import 'package:frontend/core/services/sp_service.dart';
 import 'package:frontend/models/user_model.dart';
 import 'package:http/http.dart' as http;
 
 class AuthRemoteRepo {
+  final spService = SpService();
   Future<UserModel> signUp( {
     required String name,
     required String email,
@@ -59,6 +59,46 @@ class AuthRemoteRepo {
 
     } catch (error) {
       throw error.toString();
+    }
+  }
+
+  Future<UserModel?> getUserData() async {
+    try {
+      final token = await spService.getToken();
+      if(token == null) {
+        return null;
+      }
+
+      final res = await http.post(Uri.parse('${Constants.backendUri}/auth/tokenIsValid',
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-token': token,
+      },
+      
+      );
+
+      if(res.statusCode != 200 || jsonDecode(res.body) == false) {
+       return null;
+      }
+
+      final userResponse = await http.get(Uri.parse('${Constants.backendUri}/auth/',
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-token': token,
+      },
+      
+      );
+
+      if(userResponse.statusCode != 200) {
+        throw jsonDecode(userResponse.body)['error'];
+      }
+
+      return UserModel.fromJson(res.body);
+
+    } catch (error) {
+      return null;
     }
   }
 }
