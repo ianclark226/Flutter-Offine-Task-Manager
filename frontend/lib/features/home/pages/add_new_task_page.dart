@@ -89,7 +89,9 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
             style: TextStyle(
               color: Colors.white, 
               fontSize: 18
-            )))
+            )
+            )
+            )
           ],
         ),
       )
