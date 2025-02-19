@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:frontend/core/constants/utils.dart';
+import 'package:frontend/features/home/pages/add_new_task_page.dart';
 import 'package:frontend/features/home/widgits/date_selector.dart';
 import 'package:frontend/features/home/widgits/task_card.dart';
 
@@ -18,7 +19,9 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text("My Tasks"),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.add,
+          IconButton(onPressed: () {
+            Navigator.push(context, AddNewTaskPage.route());
+          }, icon: Icon(CupertinoIcons.add,
           ), 
           )
         ],
