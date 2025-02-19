@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/features/auth/cubit/auth_cubit.dart';
 import 'package:frontend/features/auth/pages/signup_page.dart';
+import 'package:frontend/features/home/pages/home_page.dart';
 
 void main() {
   runApp(MultiBlocProvider(
@@ -69,11 +70,15 @@ class _MyAppState extends State<MyApp> {
                 borderRadius: BorderRadius.circular(15),
               ),
             ),
-          )),
+          ),
+          useMaterial3: true,
+          ),
       home: BlocBuilder<AuthCubit, AuthState>(
         builder: (context, state) {
-          if (state is AuthLoggedIn) {}
-          return const SignupPage();
+          if (state is AuthLoggedIn) {
+          return const HomePage();
+        }
+        return const SignupPage();
         },
       ),
     );
