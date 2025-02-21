@@ -18,7 +18,13 @@ class AuthLocalRepo {
   Future<Database> _initDB() async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, "auth.db");
-    return openDatabase(path, version: 1, onCreate: (db, version) {
+    return openDatabase(path, version: 2, onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < newVersion) {
+          await db.execute(
+            'DROP TABLE $tableName',
+          );
+        }
+      },onCreate: (db, version) {
       return db.execute(''' CREATE TABLE $tableName(
       id TEXT PRIMARY KEY,
       email TEXT NOT NULL,

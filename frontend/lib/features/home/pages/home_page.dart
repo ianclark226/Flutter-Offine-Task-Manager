@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -28,6 +29,11 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     final user = context.read<AuthCubit>().state as AuthLoggedIn;
     context.read<TasksCubit>().getAllTasks(token: user.user.token);
+    Connectivity().onConnectivityChanged.listen((data) async {
+      if(data.contains(ConnectivityResult.wifi)) {
+        await context.read<TasksCubit>().syncTasks(user.user.token);
+      }
+    });
   }
 
 @Deprecated('Use .r.')
