@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/features/auth/cubit/auth_cubit.dart';
-import 'package:frontend/features/home/cubit/add_new_task_cubit.dart';
+import 'package:frontend/features/home/cubit/tasks_cubit.dart';
 import 'package:intl/intl.dart';
 
 class AddNewTaskPage extends StatefulWidget {
@@ -28,7 +28,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
   void createNewTask() async {
     if (formKey.currentState!.validate()) {
       AuthLoggedIn user = context.read<AuthCubit>().state as AuthLoggedIn;
-      await context.read<AddNewTaskCubit>().createNewTask(
+      await context.read<TasksCubit>().createNewTask(
           title: titleController.text.trim(),
           description: descriptionController.text.trim(),
           color: selectedColor,
@@ -60,6 +60,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                     const Duration(days: 90),
                   ),
                 );
+                
                 if (_selectedDate != null) {
                   setState(() {
                     selectedDate = _selectedDate;
@@ -75,9 +76,9 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
             )
           ],
         ),
-        body: BlocConsumer<AddNewTaskCubit, AddNewTaskState>(
+        body: BlocConsumer<TasksCubit, TasksState>(
           listener: (context, state) {
-            if(state is AddNewTaskError) {
+            if(state is TasksError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("Task added successfully"))
               );
@@ -85,9 +86,6 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
             }
           },
           builder: (context, state) {
-            if( state is AddNewTaskLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
             return SingleChildScrollView(
               padding: const EdgeInsets.all(20.0),
               child: Form(
@@ -137,6 +135,6 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
               ),
             );
           },
-        ));
+        ),);
   }
 }

@@ -5,10 +5,10 @@ import 'package:frontend/features/home/repo/task_remote_repo.dart';
 import 'package:frontend/models/task_model.dart';
 
 
-part 'add_new_task_state.dart';
+part 'tasks_state.dart';
 @Deprecated('Use .r.')
-class AddNewTaskCubit  extends Cubit<AddNewTaskState>{
-  AddNewTaskCubit() : super(AddNewTaskInitial());
+class TasksCubit  extends Cubit<TasksState>{
+  TasksCubit() : super(TasksInitial());
   final taskRemoteRepo = TaskRemoteRepo();
   Future<void> createNewTask({
     required String title,
@@ -18,12 +18,26 @@ class AddNewTaskCubit  extends Cubit<AddNewTaskState>{
     required DateTime dueAt,
   }) async {
     try {
-      emit(AddNewTaskLoading());
+      emit(TasksLoading());
       final taskModel = await taskRemoteRepo.createTask(title: title, description: description, hexColor: rgbToHex(color), token: token, dueAt: dueAt);
 
-      emit(AddNewTaskSuccess(taskModel));
+      emit(TasksSuccess(taskModel));
     } catch(error) {
-      emit(AddNewTaskError(error.toString()));
+      emit(TasksError(error.toString()));
+    }
+  }
+
+  Future<void> getAllTasks({
+    required String token,
+    
+  }) async {
+    try {
+      emit(TasksLoading());
+      final tasks = await taskRemoteRepo.getTasks(token: token);
+
+      emit(GetTasksSuccess(tasks));
+    } catch(error) {
+      emit(TasksError(error.toString()));
     }
   }
 }

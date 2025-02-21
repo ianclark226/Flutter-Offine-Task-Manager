@@ -55,7 +55,7 @@ class _SignupPageState extends State<SignupPage> {
         builder: (context, state) {
           if(state is AuthLoading) {
             return const Center(
-              child: CircularProgressIndicator()
+              child: CircularProgressIndicator(),
             );
           }
           return Padding(

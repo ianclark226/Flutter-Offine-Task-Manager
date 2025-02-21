@@ -1,10 +1,14 @@
 
 import 'dart:convert';
+import 'dart:ui';
+
+import 'package:frontend/core/constants/utils.dart';
 
 class TaskModel {
   final String id;
   final String uid;
   final String title;
+  final Color color;
   final String description;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -17,6 +21,7 @@ class TaskModel {
     required this.createdAt,
     required this.updatedAt,
     required this.dueAt,
+    required this.color,
   });
 
   TaskModel copyWith({
@@ -27,6 +32,7 @@ class TaskModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     DateTime? dueAt,
+    Color? color,
   }) {
     return TaskModel(
       id: id ?? this.id,
@@ -36,6 +42,7 @@ class TaskModel {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       dueAt: dueAt ?? this.dueAt,
+      color: color ?? this.color,
     );
   }
 
@@ -48,6 +55,7 @@ class TaskModel {
       'createdAt': createdAt.millisecondsSinceEpoch,
       'updatedAt': updatedAt.millisecondsSinceEpoch,
       'dueAt': dueAt.millisecondsSinceEpoch,
+      'color': rgbToHex(color),
     };
   }
 
@@ -60,6 +68,7 @@ class TaskModel {
       createdAt: DateTime.parse(map['createdAt']),
       updatedAt: DateTime.parse(map['createdAt']),
       dueAt: DateTime.parse(map['dueAt']),
+      color: hexToRgb(map['hexColor'])
     );
   }
 
@@ -69,7 +78,7 @@ class TaskModel {
 
   @override
   String toString() {
-    return 'TaskModel(id: $id, uid: $uid, title: $title, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, dueAt: $dueAt)';
+    return 'TaskModel(id: $id, uid: $uid, title: $title, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, dueAt: $dueAt, color: $color)';
   }
 
   @override
@@ -83,7 +92,8 @@ class TaskModel {
       other.description == description &&
       other.createdAt == createdAt &&
       other.updatedAt == updatedAt &&
-      other.dueAt == dueAt;
+      other.dueAt == dueAt &&
+      other.color == color;
   }
 
   @override
@@ -94,6 +104,7 @@ class TaskModel {
       description.hashCode ^
       createdAt.hashCode ^
       updatedAt.hashCode ^
-      dueAt.hashCode;
+      dueAt.hashCode ^
+      color.hashCode;
   }
 }
